@@ -1,0 +1,17 @@
+#wrapper {
+	width: 50%;
+	margin: auto;
+	background-color: #444;
+}
+
+form {
+	background-color: #333;
+}
+
+input {
+	width: 100px;
+}
+
+.btn-primary{
+	margin: auto;
+}
