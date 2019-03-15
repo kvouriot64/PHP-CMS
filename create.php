@@ -19,7 +19,7 @@
 <div id="all_blogs">
   <form action="process_post.php" method="post">
     <fieldset>
-      <legend>New Blog Post</legend>
+      <legend>Add a Restaurant</legend>
       <p>
         <label for="name">Restaurant Name: </label>
         <input name="name" id="name" />

@@ -1,6 +1,6 @@
 <?php require 'db/connect.php';
 
-$query = "SELECT * FROM Restaurant";
+$query = "SELECT * FROM Restaurant ORDER BY Name";
 
 $statement = $db->prepare($query);
 $statement->execute();
@@ -22,13 +22,14 @@ $posts = $statement->fetchAll();
           <ul id="menu">
               <li><a href="index.php" class='active'>Home</a></li>
               <li><a href="create.php" >Add Restaurant</a></li>
-              <li><a href="edit.php">Edit an Entry</a></li>
           </ul> 
 <div id="all_restaurants">
-  <?php foreach($posts as $post): ?>
-    
-    <h1>?= $post['Name'] ?></h1>
+  <ul>
+    <?php foreach($posts as $post): ?>
+      
+      <li><a href="restaurant.php?id=<?= $post['RestaurantId'] ?>"><?= $post['Name'] ?></a></li><span><a href="edit.php?id=<?= $post['RestaurantId'] ?>">edit</a></span>
 
-  <?php endforeach ?>
+    <?php endforeach ?>
+  </ul>
 </div>
 <?php include 'includes/footer.php'; ?>

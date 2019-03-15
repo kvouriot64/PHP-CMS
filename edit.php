@@ -10,7 +10,7 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if($id)
 {
-  $query = "SELECT * FROM BlogPosts WHERE Id = (:id)";
+  $query = "SELECT * FROM Restaurant WHERE RestaurantId = :id";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
@@ -27,13 +27,13 @@ else
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Kyle's Blog</title>
+    <title>AfterHours - Edit</title>
     <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
     <div id="wrapper">
         <div id="header">
-            <h1><a href="index.php">Edit Post</a></h1>
+            <h1><a href="index.php">Edit Information</a></h1>
         </div> <!-- END div id="header" -->
 <ul id="menu">
     <li><a href="index.php" >Home</a></li>
@@ -42,26 +42,33 @@ else
 <div id="all_blogs">
   <form action="process_post.php" method="post">
     <fieldset>
-      <legend>Edit Blog Post</legend>
+      <legend>Edit Restaurant Information</legend>
       <p>
-        <label for="title">Title</label>
-        <input name="title" id="title" value="<?=$post['Title']?>" />
+        <label for="name">Name: </label>
+        <input name="name" id="name" value="<?=$post['Name']?>" />
       </p>
       <p>
-        <label for="content">Content</label>
-        <textarea name="content" id="content"><?= $post['Content'] ?></textarea>
+        <label for="description">Description: </label>
+        <textarea name="description" id="description"><?= $post['Description'] ?></textarea>
       </p>
       <p>
-        <input type="hidden" name="id" value="<?= $post['Id'] ?>" />
+        <label for="address">Address</label>
+        <textarea name="address" id="address"><?= $post['Address'] ?></textarea>
+      </p>
+      <p>
+        <label for="phone">Phone Number: </label>
+        <textarea name="phone" id="phone"><?= $post['PhoneNumber'] ?></textarea>
+      </p>
+      <p>
+        <label for="postal">Postal Code: </label>
+        <textarea name="postal" id="postal"><?= $post['PostalCode'] ?></textarea>
+      </p>
+      <p>
+        <input type="hidden" name="id" value="<?= $post['RestaurantId'] ?>" />
         <input type="submit" name="command" value="Update" />
-        <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this post?')" />
+        <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this page?')" />
       </p>
     </fieldset>
   </form>
 </div>
-        <div id="footer">
-            Copywrong 2019 - No Rights Reserved
-        </div> <!-- END div id="footer" -->
-    </div> <!-- END div id="wrapper" -->
-</body>
-</html>
+<?php include 'includes/footer.php' ?>

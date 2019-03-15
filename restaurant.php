@@ -1,4 +1,4 @@
-<?php require 'connect.php';
+<?php require 'db/connect.php';
 /*
 * Shows an entire post on its own page - specifically intended for 
 * posts longer than 200 characters in length
@@ -8,7 +8,7 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if($id)
 {
-  $query = "SELECT * FROM BlogPosts WHERE Id = (:id)";
+  $query = "SELECT * FROM Restaurant WHERE RestaurantId = (:id)";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
@@ -26,28 +26,24 @@ else
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Kyle's Blog - Show All</title>
+    <title>AfterHours - <?= $post['Name'] ?></title>
     <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
     <div id="wrapper">
         <div id="header">
-            <h1><a href="index.php">Kyle's Blog</a></h1>
+            <h1><a href="index.php"></a></h1>
         </div> <!-- END div id="header" -->
 <ul id="menu">
     <li><a href="index.php" >Home</a></li>
-    <li><a href="create.php" >New Post</a></li>
+    <li><a href="create.php" >Add Restaurant</a></li>
 </ul> <!-- END div id="menu" -->
   <div id="all_blogs">
     <div class="blog_post">
-            <h2><a href="show.php?id=<?=$post['Id']?>"><?= $post['Title'] ?></a></h2>
-              <p>
-                <small>
-                  <?= $post['PostDate'] ?> -
-                  <a href="edit.php?id=<?=$post['Id']?>">edit</a>
-                </small>
-              </p>
-            <div class='blog_content'><?= $post['Content'] ?></div>
+            <h2><?= $post['Name'] ?></h2>
+            <p class='blog_content'>About <?= $post['Name'] ?>: <?= $post['Description'] ?></p>
+            <p>Phone Number: <?= $post['PhoneNumber'] ?></p>
+            <p>Address: <?= $post['Address'] ?>, <?= $post['PostalCode'] ?></p>
           </div>
   </div>
         <div id="footer">

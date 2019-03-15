@@ -7,19 +7,15 @@
 if($_POST)
 {
 	$command = $_POST['command'];
+
 	$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-	
+
+	//Insert commands
 	if($command == 'Add')
 	{
-		$name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$postal = filter_input(INPUT_POST, 'postal', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		//Sanitizes all the information to be added or
+		//updated in the Restaurant table
+		include 'includes/sanitizerestaurant.php';
 
 		if($name && $description && $address && $phone && $postal)
 		{
@@ -36,32 +32,36 @@ if($_POST)
 			$statement->execute();
 
 			header('Location:index.php');
-		}
+		}		
 	}
 	elseif($command == 'Update')
 	{
-		$title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		include 'includes/sanitizerestaurant.php';
 
 		if(!$id)
 		{
-			header('Location:index.php');
+			header('Location:index.php'); //Sends the user back to the home page if the id isn't properly formatted
 		}
-		elseif($id && $title && $content)
+		elseif($id && $name && $description && $address && $phone && $postal)
 		{
-			$query = "UPDATE BlogPosts 
-					SET Title = :title,
-					Content = :content,
-					PostDate = CURRENT_TIMESTAMP
-					WHERE Id = (:id)";
+			$query = "UPDATE Restaurant					
+					SET Name = :name,
+					Description = :description,
+					Address = :address,
+					PhoneNumber = :phonenumber,
+					PostalCode = :postal
+					WHERE RestaurantId = :id";
 
 			$statement = $db->prepare($query);
 			$statement->bindValue(':id', $id);
-			$statement->bindValue(':title', $title);
-			$statement->bindValue(':content', $content);
+			$statement->bindValue(':name', $name);
+			$statement->bindValue(':description', $description);
+			$statement->bindValue(':address', $address);
+			$statement->bindValue(':phonenumber', $phone);
+			$statement->bindValue(':postal', $postal);
 
 			$statement->execute();
+
 			header('Location:index.php');
 		}
 	}
@@ -73,7 +73,7 @@ if($_POST)
 		}
 		else
 		{
-			$query = "DELETE FROM BlogPosts WHERE Id =(:id)";
+			$query = "DELETE FROM Restaurant WHERE RestaurantId = :id";
 
 			$statement = $db->prepare($query);
 			$statement->bindValue(':id', $id);
@@ -83,25 +83,3 @@ if($_POST)
 	}
 }
 ?>
-
-<?php if(!$title || !$content): ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Error</title>
-	<link href="style.css" rel="stylesheet" type="text/css">
-</head>
-<body>
-	<div id="wrapper">
-		<div id="all_blogs">
-			<h1>An Error Occured</h1>
-			<p>The content and title both need at least one character</p>
-			<p><a href="index.php">Home</a></p>
-		</div>
-		<div id="footer">
-	        Copywrong 2019 - No Rights Reserved
-	    </div>
-	</div>
-</body>
-</html>
-<?php endif ?>
