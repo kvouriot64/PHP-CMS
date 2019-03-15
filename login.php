@@ -11,13 +11,17 @@
 
 		$query = "SELECT * FROM users";
 	}
-
-	include 'includes/header.php';
 ?>
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+
+	<?php include 'includes/header.php'; ?>
 
   
     <h1>Sign In</h1>
-			<form method="post">
+			<form action=""; method="post">
 			  <fieldset>
 			    <div class="form-group">
 			      <label for="username">Username:</label>
