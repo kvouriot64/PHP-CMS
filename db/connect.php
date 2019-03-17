@@ -9,7 +9,6 @@
 
 	define('DB_PASS', 'gorgonzola7!');
 
-
 	try
 	{
 		$db = new PDO(DB_CONN, DB_USER, DB_PASS);

@@ -1,4 +1,5 @@
 <?php require 'db/connect.php';
+      require 'authenticate.php';
 
 $query = "SELECT * FROM Restaurant ORDER BY Name";
 
