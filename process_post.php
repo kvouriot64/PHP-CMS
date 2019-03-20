@@ -38,19 +38,20 @@ if($_POST)
 	{
 		include 'includes/sanitizerestaurant.php';
 
-		if(!$id)
+		if(!$id || !$name && !$description && !$address && !$phone && !$postal)
 		{
 			header('Location:index.php'); //Sends the user back to the home page if the id isn't properly formatted
 		}
 		elseif($id && $name && $description && $address && $phone && $postal)
 		{
 			$query = "UPDATE Restaurant					
-					SET Name = :name,
-					Description = :description,
-					Address = :address,
-					PhoneNumber = :phonenumber,
-					PostalCode = :postal
-					WHERE RestaurantId = :id";
+						SET Name = :name,
+						Description = :description,
+						Address = :address,
+						PhoneNumber = :phonenumber,
+						PostalCode = :postal,
+						UpdateDate = CURRENT_TIMESTAMP
+						WHERE RestaurantId = :id";
 
 			$statement = $db->prepare($query);
 			$statement->bindValue(':id', $id);

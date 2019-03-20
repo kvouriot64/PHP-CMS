@@ -1,4 +1,6 @@
 <?php 
+	require 'db/connect.php';
+
 	$invalidUser = false;
 	$invalidPassword = false;
 	
@@ -8,12 +10,11 @@
 
 		$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-		$query = "SELECT * FROM users WHERE user_name = :user AND Password = :pass";
+		$query = "SELECT UserId, user_name, Password FROM users WHERE user_name = :user";
 
 		$statement = $db->prepare($query);
 
 		$statement->bindValue(':user', $username);
-		$statement->bindValue(':pass', $password);
 
 		$statement->execute();
 
@@ -21,8 +22,11 @@
 
 		if(count($result) > 0)
 		{
+			session_start();
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
+
+			header('Location: index.php');
 		}
 	}
 ?>
@@ -38,12 +42,7 @@
 			  <fieldset>
 			    <div class="form-group">
 			      <label for="username">Username:</label>
-			      <input type="text" class="form-control" id="username" placeholder="username">
-			      <small id="emailHelp" class="form-text text-muted">We'll never share your information with anyone else.</small>
-
-			      <?php if($invalidUser): ?>
-			      	<p><?= $usernameError ?></p>
-			      <?php endif ?>
+			      <input name="username" type="text" class="form-control" id="username" placeholder="username">
 
 			    </div>
 
