@@ -14,7 +14,16 @@ if($id)
   $statement->bindValue(':id', $id);
   $statement->execute();
 
-  $post = $statement->fetch();
+  $count = $statement->rowCount();
+
+  if($count == 0)
+  {
+    Header("Location: index.php");
+  }
+  else
+  {
+    $post = $statement->fetch();
+  }
 }
 else
 {

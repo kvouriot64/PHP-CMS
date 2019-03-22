@@ -7,10 +7,9 @@
 	if($_POST)
 	{
 		$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
 		$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-		$query = "SELECT UserId, user_name, Password FROM users WHERE user_name = :user";
+		$query = "SELECT user_name, Password FROM users WHERE user_name = :user";
 
 		$statement = $db->prepare($query);
 
@@ -18,19 +17,24 @@
 
 		$statement->execute();
 
-		$result = $statement->fetchAll();
+		$result = $statement->fetch();
 
 		if(count($result) > 0)
 		{
-			session_start();
-			$_SESSION['username'] = $username;
-			$_SESSION['password'] = $password;
+			if(password_verify($password, $result['Password']) 
+				|| $password == $result['Password'])
+			{
+				session_start();
+				$_SESSION['UserId'] = $result['UserId'];
+				$_SESSION['username'] = $username;
+				$_SESSION['password'] = $password;
 
-			header('Location: index.php');
+				header('Location: index.php');
+			}
 		}
 	}
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Login</title>

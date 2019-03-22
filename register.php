@@ -75,7 +75,7 @@ function isPasswordLengthValid($password)
 {
 	$validPassword = false;
 
-	if(strlen($password) > 8 && strlen($password) < 16)
+	if(strlen($password) >= 8 && strlen($password) <= 16)
 	{
 		$validPassword = true;
 	}
