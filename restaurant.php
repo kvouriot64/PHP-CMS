@@ -25,13 +25,12 @@ if($id)
     $post = $statement->fetch();
   }
 
-  $query = "SELECT * FROM reviews WHERE RestaurantId = :restId ORDER BY PostDate ASC";
+  $query = "SELECT ReviewId, reviews.UserId, Heading, PostDate, user_name, Review, Rating FROM reviews JOIN users ON reviews.UserId = users.UserId WHERE RestaurantId = :restId ORDER BY PostDate DESC";
   $select_statement = $db->prepare($query);
   $select_statement->bindValue(':restId', $id);
   $select_statement->execute();
 
   $reviews = $select_statement->fetchAll();
-
 }
 else
 {
@@ -56,6 +55,12 @@ else
           <h3><?= $review['Heading'] ?></h2>
           <p><?= $review['Review'] ?></p>
           <small>Posted by <?= $review['user_name'] ?> at <?= $review['PostDate'] ?></small>
+
+          <?php if($adminLoggedIn): ?>
+
+            <p><a href="delete_review.php?id=<?= $review['ReviewId'] ?>&restid=<?= $id ?>">Delete Review</a></p>
+
+          <?php endif ?>
         <?php endforeach ?>
 
       <?php endif ?>

@@ -9,7 +9,7 @@
 		$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-		$query = "SELECT user_name, Password FROM users WHERE user_name = :user";
+		$query = "SELECT * FROM users WHERE user_name = :user";
 
 		$statement = $db->prepare($query);
 
@@ -22,7 +22,7 @@
 		if(count($result) > 0)
 		{
 			if(password_verify($password, $result['Password']) 
-				|| $password == $result['Password'])
+			|| $password == $result['Password'])
 			{
 				session_start();
 				$_SESSION['UserId'] = $result['UserId'];

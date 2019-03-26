@@ -13,7 +13,7 @@ if($_POST)
 	{
 		if($password != $confirmpassword)
 		{
-			echo "The passwords don't match";
+			echo "The passwords entered don't match, please try again.";
 		}
 		elseif($password != ADMIN_PASS)
 		{
@@ -46,7 +46,7 @@ if($_POST)
 	{
 		if($password != $confirmpassword)
 		{
-			echo "The passwords don't match";
+			echo "The passwords entered don't match, please try again.";
 		}
 		elseif(!$password || !isPasswordLengthValid($password))
 		{

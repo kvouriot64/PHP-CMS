@@ -44,6 +44,7 @@ if($_SESSION)
               <?php if($adminLoggedIn): ?>
               	<li><a href="admin.php">Admin</a></li>
                 <li><a href="create.php" >Add Restaurant</a></li>
+                <li><a href="manage_users.php">Manage Users</a></li>
               <?php endif ?>
 
               <?php if(!$userLoggedIn): ?>
