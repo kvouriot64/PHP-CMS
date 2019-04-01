@@ -6,6 +6,7 @@ if($_POST)
 	$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$confirmpassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$userType = filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 
 	if($userType == 'Admin')
@@ -14,18 +15,14 @@ if($_POST)
 		{
 			echo "The passwords entered don't match, please try again.";
 		}
-		elseif($password != ADMIN_PASS)
-		{
-			echo 'Password is incorrect';
-		}
 		elseif(!$password || !isPasswordLengthValid($password))
 		{
 			echo 'Password must be between 8 and 16 characters';
 		}
-		elseif($username && $password == $confirmpassword && $password == ADMIN_PASS && $email)
+		elseif($username && $password == $confirmpassword && $email)
 		{
-			$insert = "INSERT INTO users (user_name, Password, Email, Approved)
-						VALUES (:user, :pass, :email, :approval)";
+			$insert = "INSERT INTO users (user_name, Password, Email, UserType, Approved)
+						VALUES (:user, :pass, :email, :usertype, :approval)";
 						
 			$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -33,6 +30,7 @@ if($_POST)
 			$statement->bindValue(':user', $username);
 			$statement->bindValue(':pass', $password_hash);
 			$statement->bindValue(':email', $email);
+			$statement->bindValue(':usertype', $userType);
 			$statement->bindValue(':approval', 'y');
 
 			$statement->execute();
@@ -84,7 +82,7 @@ function isPasswordLengthValid($password)
 
 ?>
 
-    <h1>Register</h1>
+    <h1>Create User</h1>
 			<form method="post">
 			  <fieldset>
 			    <div class="form-group">
@@ -95,6 +93,14 @@ function isPasswordLengthValid($password)
 			    <div class="form-group">
 			      <label for="email">Email:</label>
 			      <input name="email" class="form-control" id="email" placeholder="Your Email">
+			    </div>
+
+			    <div class="form-group">
+			      <label for="email">User Type:</label>
+			      <select id="usertype" name="usertype">
+			      	<option value="User">User</option>
+			      	<option value="Admin">Admin</option>
+			      </select>
 			    </div>
 
 			    <div class="form-group">

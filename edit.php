@@ -8,7 +8,8 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if($id)
 {
-  $query = "SELECT * FROM Restaurant WHERE RestaurantId = :id";
+  $query = "SELECT * FROM Restaurant, Categories WHERE 
+      RestaurantId = :id";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
@@ -55,10 +56,18 @@ else
         <textarea name="postal" id="postal"><?= $post['PostalCode'] ?></textarea>
       </p>
       <p>
+        <label for="category">Category: </label>
+        <select name="category" id="category">
+          <option value="1">Restaurant</option>
+          <option value="2">Bar</option>
+        </select>
+      </p>
+      <p>
         <input type="hidden" name="id" value="<?= $post['RestaurantId'] ?>" />
         <input type="submit" name="command" value="Update" />
         <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this page?')" />
       </p>
+      <p><a href="admin.php">Cancel</a></p>
     </fieldset>
   </form>
 </div>

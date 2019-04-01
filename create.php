@@ -25,8 +25,16 @@
         <input name="postal" id="postal">
       </p>
       <p>
+        <label for="category">Category: </label>
+        <select name="category" id="category">
+          <option value="1">Restaurant</option>
+          <option value="2">Bar</option>
+        </select>
+      </p>
+      <p>
         <input type="submit" name="command" value="Add" />
       </p>
+      <p><a href="admin.php">Cancel</a></p>
     </fieldset>
   </form>
 </div>

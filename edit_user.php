@@ -8,7 +8,7 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if($id)
 {
-  $query = "SELECT * FROM Restaurant WHERE RestaurantId = :id";
+  $query = "SELECT * FROM Users WHERE UserId = :id";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
@@ -29,36 +29,103 @@ else
 {
   header('Location:index.php');
 }
+
+if($_POST)
+{
+  $validPassword = true;
+  $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+  $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+  $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+  $confirmpassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+  $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+
+  if($id)
+  {
+    $passwordquery = "SELECT Password FROM Users WHERE UserId = :id";
+
+    $passwordStatement = $db->prepare($passwordquery);
+    $passwordStatement->bindValue('id', $id);
+    $passwordStatement->execute();
+
+    $passwordResult = $passwordStatement->fetch();
+
+
+    if(empty($password) && empty($confirmpassword))
+    {
+      $password = $passwordResult['Password'];
+    }
+    elseif($password != $confirmpassword)
+    {
+      echo "The passwords entered don't match, please try again.";
+      $validPassword = false;
+    }
+    elseif(!isPasswordLengthValid($password))
+    {
+      $validPassword = false;
+      echo 'Password must be between 8 and 16 characters';
+    }
+
+    if($username && $validPassword && $email)
+    {
+      $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+      $insert = "UPDATE users SET user_name = :user, 
+                    Password = :pass,
+                    Email = :email
+                  WHERE UserId = :id";
+
+      $statement = $db->prepare($insert);
+      $statement->bindValue(':user', $username);
+      $statement->bindValue(':pass', $password_hash);
+      $statement->bindValue(':email', $email);
+      $statement->bindValue(':id', $id);
+
+      $statement->execute();
+
+      Header("Location: manage_users.php");
+    }
+  }
+}
+
+
+//Tests if the password is a valid length
+function isPasswordLengthValid($password) {
+    $validPassword = false;
+
+    if(strlen($password) >= 8 && strlen($password) <= 16)
+    {
+      $validPassword = true;
+    }
+
+    return $validPassword;
+  }
 ?>
 <div id="all_blogs">
-  <form action="process_post.php" method="post">
+  <form method="post">
     <fieldset>
       <legend>Edit Restaurant Information</legend>
       <p>
-        <label for="name">Name: </label>
-        <input name="name" id="name" value="<?=$post['Name']?>" />
+        <label for="username">User Name: </label>
+        <input name="username" id="username" value="<?=$post['user_name']?>" />
       </p>
       <p>
-        <label for="description">Description: </label>
-        <textarea name="description" id="description"><?= $post['Description'] ?></textarea>
+        <label for="email">Email: </label>
+        <input name="email" id="email" value="<?= $post['Email'] ?>">
       </p>
       <p>
-        <label for="address">Address</label>
-        <textarea name="address" id="address"><?= $post['Address'] ?></textarea>
+         <label for="password">New Password: </label>
+          <input name="password" type="password" class="form-control" id="password" placeholder="Password">
       </p>
       <p>
-        <label for="phone">Phone Number: </label>
-        <textarea name="phone" id="phone"><?= $post['PhoneNumber'] ?></textarea>
+         <label for="confirm-password">Confirm Password: </label>
+          <input name="confirm-password" type="password" class="form-control" id="confirm-password" placeholder="Password">
       </p>
       <p>
-        <label for="postal">Postal Code: </label>
-        <textarea name="postal" id="postal"><?= $post['PostalCode'] ?></textarea>
-      </p>
-      <p>
-        <input type="hidden" name="id" value="<?= $post['RestaurantId'] ?>" />
+        <input type="hidden" name="id" value="<?= $post['UserId'] ?>" />
         <input type="submit" name="command" value="Update" />
-        <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this page?')" />
       </p>
+      <p><a href="manage_users.php">cancel</a></p>
     </fieldset>
   </form>
 </div>
