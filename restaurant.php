@@ -73,8 +73,8 @@ else
           <label for="heading">Heading:</label>
           <input name="heading" id="heading">
 
-          <label for="review">Review: </label>
-          <textarea name="review" id="review"></textarea>
+          <label for="content">Review: </label>
+          <textarea name="review" id="content"></textarea>
 
           <label for="rating">Rating: </label>
           <select id="rating" name="rating">

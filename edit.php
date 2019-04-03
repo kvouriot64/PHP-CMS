@@ -40,8 +40,8 @@ else
         <input name="name" id="name" value="<?=$post['Name']?>" />
       </p>
       <p>
-        <label for="description">Description: </label>
-        <textarea name="description" id="description"><?= $post['Description'] ?></textarea>
+        <label for="content">Description: </label>
+        <textarea name="description" id="content"><?= $post['Description'] ?></textarea>
       </p>
       <p>
         <label for="address">Address</label>

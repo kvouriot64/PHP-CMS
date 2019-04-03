@@ -9,7 +9,9 @@ if($id)
   if($_POST)
   {
     $heading = filter_input(INPUT_POST, 'heading', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $review = filter_input(INPUT_POST, 'review', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+    $review = $_POST['review'];
+
     $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT);
 
     if($heading && $review && ($rating > 0 || $rating <= 5))
