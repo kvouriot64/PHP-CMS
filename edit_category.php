@@ -50,12 +50,14 @@ else
 
 <div id="all_restaurants">
   <?php if($result): ?>
-    <div class="form-group">
-        <label for="category">Category: </label>
-        <input name="category" value="<?= $result['Category'] ?>" class="form-control" id="category">
+    <form method="post">
+      <div class="form-group">
+          <label for="category">Category: </label>
+          <input name="category" value="<?= $result['Category'] ?>" class="form-control" id="category">
 
-        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-    </div>
+          <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
   <?php endif ?>
 </div>
 <?php include 'includes/footer.php'; ?>

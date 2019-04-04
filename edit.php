@@ -25,6 +25,12 @@ if($id)
   {
     $post = $statement->fetch();
   }
+
+  $categoryquery = "SELECT * FROM Categories";
+
+  $category_statement = $db->prepare($categoryquery);
+  $category_statement->execute();
+  $categories = $category_statement->fetchAll();
 }
 else
 {
@@ -57,9 +63,10 @@ else
       </p>
       <p>
         <label for="category">Category: </label>
-        <select name="category" id="category">
-          <option value="1">Restaurant</option>
-          <option value="2">Bar</option>
+         <select name="category" id="category">
+          <?php foreach($categories as $category): ?>
+            <option value="<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></option>
+          <?php endforeach ?>
         </select>
       </p>
       <p>

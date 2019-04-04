@@ -1,6 +1,16 @@
 <?php 
 include 'includes/header.php';
 
+$invalidPasswordLength = false;
+$nonMatchingPasswords = false;
+$invalidEmail = false;
+$invalidUsername = false;
+
+$username_error = "* Username cannot be empty";
+$email_error = "* Invalid email entered";
+$passwords_dont_match = "* Your entered passwords don't match";
+$password_wrong_length = "* Password must be between 8 and 16 characters";
+
 if($_POST)
 {
 	$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -8,64 +18,43 @@ if($_POST)
 	$confirmpassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 	$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 
-	if($userType == 'Admin')
+	$email_regexp = "/^([a-zA-Z0-9_\-\.]+)@(([a-zA-Z0-9_\-\.]+)\.)+([a-zA-Z]{2,6})$/";
+
+	if($username === "")
 	{
-		if($password != $confirmpassword)
-		{
-			echo "The passwords entered don't match, please try again.";
-		}
-		elseif($password != ADMIN_PASS)
-		{
-			echo 'Password is incorrect';
-		}
-		elseif(!$password || !isPasswordLengthValid($password))
-		{
-			echo 'Password must be between 8 and 16 characters';
-		}
-		elseif($username && $password == $confirmpassword && $password == ADMIN_PASS && $email)
-		{
-			$insert = "INSERT INTO users (user_name, Password, Email, Approved)
-						VALUES (:user, :pass, :email, :approval)";
-						
-			$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-			$statement = $db->prepare($insert);
-			$statement->bindValue(':user', $username);
-			$statement->bindValue(':pass', $password_hash);
-			$statement->bindValue(':email', $email);
-			$statement->bindValue(':approval', 'y');
-
-			$statement->execute();
-
-			Header("Location: index.php");
-		}
+		$invalidUsername = true;
 	}
-	elseif($userType == 'User')
+	
+	if($password != $confirmpassword)
 	{
-		if($password != $confirmpassword)
-		{
-			echo "The passwords entered don't match, please try again.";
-		}
-		elseif(!$password || !isPasswordLengthValid($password))
-		{
-			echo 'Password must be between 8 and 16 characters';
-		}
-		elseif($username && $password == $confirmpassword  && $email)
-		{
-			$password_hash = password_hash($password, PASSWORD_DEFAULT);
+		$nonMatchingPasswords = true;
+	}
 
-			$insert = "INSERT INTO users (user_name, Password, Email)
-						VALUES (:user, :pass, :email)";
+	if(!preg_match($email_regexp, $email))
+	{
+		$invalidEmail = true;
+	}
+	
+	if(!$password || !isPasswordLengthValid($password))
+	{
+		$invalidPasswordLength = true;
+	}
+	
+	if(!$invalidUsername && !$nonMatchingPasswords  && !$invalidEmail && !$invalidPasswordLength)
+	{
+		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-			$statement = $db->prepare($insert);
-			$statement->bindValue(':user', $username);
-			$statement->bindValue(':pass', $password_hash);
-			$statement->bindValue(':email', $email);
+		$insert = "INSERT INTO users (user_name, Password, Email)
+					VALUES (:user, :pass, :email)";
 
-			$statement->execute();
+		$statement = $db->prepare($insert);
+		$statement->bindValue(':user', $username);
+		$statement->bindValue(':pass', $password_hash);
+		$statement->bindValue(':email', $email);
 
-			Header("Location: index.php");
-		}
+		$statement->execute();
+
+		Header("Location: index.php");
 	}
 }
 
@@ -80,8 +69,6 @@ function isPasswordLengthValid($password)
 
 	return $validPassword;
 }
-
-
 ?>
 
     <h1>Register</h1>
@@ -92,10 +79,19 @@ function isPasswordLengthValid($password)
 			      <input name="username" type="text" class="form-control" id="username" placeholder="username">
 			    </div>
 
+			    <?php if($invalidUsername && $_POST): ?>
+			      <p class="text-danger"><?= $username_error ?></p>
+			    <?php endif?>
+
 			    <div class="form-group">
 			      <label for="email">Email:</label>
 			      <input name="email" class="form-control" id="email" placeholder="Your Email">
 			    </div>
+
+			     <?php if($invalidEmail && $_POST): ?>
+			      <p class="text-danger"><?= $email_error ?></p>
+			    <?php endif?>
+
 
 			    <div class="form-group">
 			      <label for="password">Password:</label>
@@ -106,8 +102,15 @@ function isPasswordLengthValid($password)
 			      <label for="confirm-password">Confirm Password:</label>
 			      <input name="confirm-password" type="password" class="form-control" id="confirm-password" placeholder="Password">
 			    </div>
+			    <?php if($invalidPasswordLength && $_POST): ?>
+			      <p class="text-danger"><?= $password_wrong_length ?></p>
+			    <?php endif?>
 
-			    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+			    <?php if($nonMatchingPasswords && $_POST): ?>
+			      <p class="text-danger"><?= $passwords_dont_match ?></p>
+			    <?php endif?>
+
+			    <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
 			  </fieldset>
 			</form>
 <?php include 'includes/footer.php'; ?>

@@ -8,7 +8,9 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if($id)
 {
-  $query = "SELECT * FROM Restaurant WHERE RestaurantId = (:id)";
+  $query = "SELECT * FROM Categories JOIN Restaurant
+              ON categories.CategoryID = restaurant.CategoryID 
+              WHERE RestaurantId = (:id)";
 
   $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
@@ -41,6 +43,7 @@ else
   <div id="all_blogs">
     <div class="blog_post">
             <h2><?= $post['Name'] ?></h2>
+            <h4>Category: <?= $post['Category'] ?></h4>
             <p class='blog_content'>About <?= $post['Name'] ?>: <?= $post['Description'] ?></p>
             <p>Phone Number: <?= $post['PhoneNumber'] ?></p>
             <p>Address: <?= $post['Address'] ?>, <?= $post['PostalCode'] ?></p>
