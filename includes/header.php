@@ -53,6 +53,7 @@ if($_SESSION)
               <li><a href="index.php" class='active'>Home</a></li>
 
               <?php if($adminLoggedIn): ?>
+                <li><a href="manage_categories.php">Manage Categories</a></li>
               	<li><a href="admin.php">Admin</a></li>
                 <li><a href="create.php" >Add Restaurant</a></li>
                 <li><a href="manage_users.php">Manage Users</a></li>

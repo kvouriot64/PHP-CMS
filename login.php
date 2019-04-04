@@ -19,7 +19,7 @@
 
 		$result = $statement->fetch();
 
-		if(count($result) > 0)
+		if($result)
 		{
 			if(password_verify($password, $result['Password']) 
 			|| $password == $result['Password'])
