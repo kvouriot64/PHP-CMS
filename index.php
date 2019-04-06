@@ -60,7 +60,7 @@ else
 
   <?php else: ?>
 
-  	<h2>No results exist for this category</h2>
+  	<h2>Sorry, no results exist for that specified category.</h2>
 
   <?php endif ?>
 </div>

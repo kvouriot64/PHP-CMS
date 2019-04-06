@@ -68,3 +68,8 @@ if($_SESSION)
               <?php endif ?>
           </ul>
         </nav>
+
+        <form action="search_results.php"class="searchbar" method="post">
+          <input name="search" id="search" placeholder="Search">
+           <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
+        </form>
