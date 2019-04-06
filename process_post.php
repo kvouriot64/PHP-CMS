@@ -17,9 +17,7 @@ if($_POST)
 		//updated in the Restaurant table
 		include 'includes/sanitizerestaurant.php';
 
-		$validCategory = $category == 1 || $category == 2;
-		
-		if($name && $description && $address && $phone && $postal && $validCategory)
+		if($name && $description && $address && $phone && $postal && $category)
 		{
 			$createStatement = "INSERT INTO Restaurant (Name, Description, Address, PhoneNumber, PostalCode, CategoryID) VALUES (:title, :content, :address, :phone, :postal, :catID)";
 
@@ -41,13 +39,11 @@ if($_POST)
 	{
 		include 'includes/sanitizerestaurant.php';
 
-		$validCategory = $category == 1 || $category == 2;
-
-		if(!$id || !$name && !$description && !$address && !$phone && !$postal && !$validCategory)
+		if(!$id || !$name && !$description && !$address && !$phone && !$postal && !$category)
 		{
 			header('Location:index.php'); //Sends the user back to the home page if the id isn't properly formatted
 		}
-		elseif($id && $name && $description && $address && $phone && $postal && $validCategory)
+		elseif($id && $name && $description && $address && $phone && $postal && $category)
 		{
 			$query = "UPDATE Restaurant					
 						SET Name = :name,

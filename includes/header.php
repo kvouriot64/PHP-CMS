@@ -50,7 +50,8 @@ if($_SESSION)
             <h1><a href="index.php">AfterHours</a></h1>
             <p><?= $message ?></p>
         </div>
-          <ul id="menu">
+        <nav class="navbar">
+          <ul>
               <li><a href="index.php" class='active'>Home</a></li>
 
               <?php if($adminLoggedIn): ?>
@@ -65,4 +66,5 @@ if($_SESSION)
               <?php else: ?>
                 <li><a href="logout.php">Log Out</a></li>
               <?php endif ?>
-          </ul> 
+          </ul>
+        </nav>

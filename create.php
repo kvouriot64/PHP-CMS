@@ -4,7 +4,6 @@
   $query = "SELECT * FROM Categories";
 
   $statement = $db->prepare($query);
-  $statement->bindValue(':id', $id);
   $statement->execute();
 
   $categories = $statement->fetchAll();

@@ -1,5 +1,4 @@
-<?php require 'authenticate.php';
-include 'includes/header.php';
+<?php include 'includes/header.php';
 
 if(!$adminLoggedIn)
 {
