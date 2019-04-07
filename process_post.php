@@ -16,6 +16,12 @@ if($_POST)
 		//Sanitizes all the information to be added or
 		//updated in the Restaurant table
 		include 'includes/sanitizerestaurant.php';
+		include 'fileupload.php';
+
+		if($image_upload_detected)
+		{
+			
+		}
 
 		if($name && $description && $address && $phone && $postal && $category)
 		{

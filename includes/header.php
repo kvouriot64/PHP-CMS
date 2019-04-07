@@ -1,5 +1,6 @@
 <?php require 'db/connect.php';
 include 'includes/message.php';
+include 'query_categories.php';
 
 $adminLoggedIn = false;
 $userLoggedIn = false;
@@ -68,8 +69,18 @@ if($_SESSION)
               <?php endif ?>
           </ul>
         </nav>
+        <div>
+          <form action="search_results.php"class="searchbar" method="post">
+            <input name="search" id="search" placeholder="Search">
+             <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
 
-        <form action="search_results.php"class="searchbar" method="post">
-          <input name="search" id="search" placeholder="Search">
-           <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
-        </form>
+             <p>Search by category</p>
+
+             <select name="category">
+              <option value="all">All</option>
+              <?php foreach($categories as $category): ?>
+                <option value="<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></option>
+              <?php endforeach ?>
+            </select>
+          </form>
+        </div>

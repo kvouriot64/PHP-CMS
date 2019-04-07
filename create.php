@@ -10,7 +10,7 @@
 ?>
 
 <div id="all_blogs">
-  <form action="process_post.php" method="post">
+  <form action="process_post.php" method="post" enctype='multipart/form-data'>
     <fieldset>
       <legend>Add a Restaurant</legend>
       <p>
@@ -42,7 +42,11 @@
         </select>
       </p>
       <p>
-        <input type="submit" name="command" value="Add" />
+         <label for='image'>Picture:</label>
+         <input type='file' name='image' id='image'>
+      </p>
+      <p>
+        <input class="btn btn-primary" type="submit" name="command" value="Add" />
       </p>
       <p><a href="admin.php">Cancel</a></p>
     </fieldset>

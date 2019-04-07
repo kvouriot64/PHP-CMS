@@ -1,4 +1,5 @@
 <?php require 'includes/header.php';
+include 'fileupload.php';
 /*
 * Shows an entire post on its own page - specifically intended for 
 * posts longer than 200 characters in length
@@ -42,6 +43,11 @@ else
 
   <div id="all_blogs">
     <div class="blog_post">
+            <?php if ($image_upload_detected): ?>
+
+              <img src="" alt="">
+            
+            <?php endif ?>
             <h2><?= $post['Name'] ?></h2>
             <h4>Category: <?= $post['Category'] ?></h4>
             <p class='blog_content'>About <?= $post['Name'] ?>: <?= $post['Description'] ?></p>

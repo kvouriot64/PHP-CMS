@@ -1,11 +1,5 @@
 <?php 
- include 'includes/header.php';
-
-$category_query = "SELECT * FROM Categories";
-
-$category_statement = $db->prepare($category_query);
-$category_statement->execute();
-$categories = $category_statement->fetchAll();
+include 'includes/header.php';
 
 if($_GET)
 {
