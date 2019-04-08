@@ -69,7 +69,9 @@ if($_POST)
 
 			$statement->execute();
 
-			header('Location:index.php');
+			include 'fileupload.php?id=' . $id;
+
+			//header('Location:index.php');
 		}
 	}
 	elseif($command == 'Delete')
