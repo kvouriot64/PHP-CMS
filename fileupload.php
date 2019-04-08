@@ -45,6 +45,7 @@ require_once 'db/connect.php';
             /* Verifies whether there's a get parameter or not. A get parameter will be the primary indicator as to whether a new restaurant is being added, or an existing restaurant is being edited. */
             if($_GET)
             {
+                echo 'test';
                 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
                 if($id)
