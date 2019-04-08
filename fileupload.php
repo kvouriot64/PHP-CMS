@@ -42,57 +42,19 @@ require_once 'db/connect.php';
         {
             move_uploaded_file($temporary_image_path, $new_image_path);
 
-            /* Verifies whether there's a get parameter or not. A get parameter will be the primary indicator as to whether a new restaurant is being added, or an existing restaurant is being edited. */
-            if($_GET)
-            {
-                echo 'test';
-                $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+            /*This query will execute if a new restaurant is being added. Because the new restaurant ID isn't known, a SELECT MAX() statement will be executed to retrieve it.*/
+            $restaurant_id_query = "SELECT MAX(RestaurantId) FROM Restaurant";
+            $statement = $db->prepare($restaurant_id_query);
+            $statement->execute();
 
-                if($id)
-                {
-                    //Query to see if any rows exist that match the restaurant id
-                    //of the restaurant being edited
-                    $query = "SELECT * FROM Images WHERE RestaurantId = :id";
+            $restaurant_id = $statement->fetch();
 
-                    $stmt = $db->prepare($query);
-                    $stmt->bindValue(':id', $id);
-                    $stmt->execute();
+            $image_insert = "INSERT INTO Images (FileName, RestaurantId)
+                                VALUES (:file, :rest_id)";
 
-                    /*If there's no records returned, an insert statement will be executed in order for the update to properly work. If there is, a normal update statement is executed*/
-                    if($stmt->rowCount() == 0)
-                    {
-                        $query = "INSERT INTO Images (FileName, RestaurantId)
-                            VALUES (:file, :id)";
-                    }
-                    else
-                    {
-                        $query = "UPDATE Images 
-                        SET FileName = :file,
-                        WHERE RestaurantId = :id";
-                    }
-
-                    $statement = $db->prepare($query);
-                    $statement->bindValue(':file', $image_filename);
-                    $statement->bindValue(':id', $id);
-                    $statement->execute();
-                }
-            }
-            else
-            {
-                /*This query will execute if a new restaurant is being added. Because the new restaurant ID isn't known, a SELECT MAX() statement will be executed to retrieve it.*/
-                $restaurant_id_query = "SELECT MAX(RestaurantId) FROM Restaurant";
-                $statement = $db->prepare($restaurant_id_query);
-                $statement->execute();
-
-                $restaurant_id = $statement->fetch();
-
-                $image_insert = "INSERT INTO Images (FileName, RestaurantId)
-                                    VALUES (:file, :rest_id)";
-
-                $statement = $db->prepare($image_insert);
-                $statement->bindValue(':file', $image_filename);
-                $statement->bindValue(':rest_id', $restaurant_id[0]);
-            }
+            $statement = $db->prepare($image_insert);
+            $statement->bindValue(':file', $image_filename);
+            $statement->bindValue(':rest_id', $restaurant_id[0]);
 
             $statement->execute();
         }
