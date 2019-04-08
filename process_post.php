@@ -69,8 +69,8 @@ if($_POST)
 
 			$statement->execute();
 
-			include 'fileupload.php?id=' . $id;
-
+			Header('Location: fileupload.php?id=' . $id);
+			
 			//header('Location:index.php');
 		}
 	}
