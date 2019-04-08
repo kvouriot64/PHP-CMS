@@ -1,4 +1,7 @@
 <?php
+
+require_once 'db/connect.php';
+
     // file_upload_path() - Safely build a path String that uses slashes appropriate for our OS.
     // Default upload path is an 'uploads' sub-folder in the current folder.
     function file_upload_path($original_filename, $upload_subfolder_name = 'uploads') {
@@ -13,8 +16,8 @@
 
     // file_is_an_image() - Checks the mime-type & extension of the uploaded file for "image-ness".
     function file_is_an_image($temporary_path, $new_path) {
-        $allowed_mime_types      = ['image/gif', 'image/jpeg', 'image/png', 'application/pdf'];
-        $allowed_file_extensions = ['gif', 'jpg', 'jpeg', 'png', 'pdf'];
+        $allowed_mime_types      = ['image/jpeg', 'image/png', 'image/gif'];
+        $allowed_file_extensions = ['jpg', 'jpeg', 'png', 'gif'];
         
         $actual_file_extension   = pathinfo($new_path, PATHINFO_EXTENSION);
         $actual_mime_type        = $_FILES['image']['type'];
@@ -38,26 +41,20 @@
         if (file_is_an_image($temporary_image_path, $new_image_path)) 
         {
             move_uploaded_file($temporary_image_path, $new_image_path);
+
+            $restaurant_id_query = "SELECT MAX(RestaurantId) FROM Restaurant";
+            $statement = $db->prepare($restaurant_id_query);
+            $statement->execute();
+
+            $restaurant_id = $statement->fetch();
+
+            $image_insert = "INSERT INTO Images (FileName, RestaurantId)
+                                VALUES (:file, :rest_id)";
+
+            $statement = $db->prepare($image_insert);
+            $statement->bindValue(':file', $image_filename);
+            $statement->bindValue(':rest_id', $restaurant_id[0]);
+            $statement->execute();
         }
     }
 ?>
-
- <!DOCTYPE html>
- <html>
-     <head><title>File Upload Form</title></head>
- <body>
-     
-    <?php if ($upload_error_detected): ?>
-
-        <p>Error: <?= $errorMessage ?></p>
-
-    <?php elseif ($image_upload_detected): ?>
-
-        <p>Client-Side Filename: <?= $_FILES['image']['name'] ?></p>
-        <p>Apparent Mime Type:   <?= $_FILES['image']['type'] ?></p>
-        <p>Size in Bytes:        <?= $_FILES['image']['size'] ?></p>
-        <p>Temporary Path:       <?= $_FILES['image']['tmp_name'] ?></p>
-
-    <?php endif ?>
- </body>
- </html>

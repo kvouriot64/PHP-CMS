@@ -16,17 +16,12 @@ if($_POST)
 		//Sanitizes all the information to be added or
 		//updated in the Restaurant table
 		include 'includes/sanitizerestaurant.php';
-		include 'fileupload.php';
-
-		if($image_upload_detected)
-		{
-			
-		}
 
 		if($name && $description && $address && $phone && $postal && $category)
 		{
-			$createStatement = "INSERT INTO Restaurant (Name, Description, Address, PhoneNumber, PostalCode, CategoryID) VALUES (:title, :content, :address, :phone, :postal, :catID)";
-
+			$createStatement = "INSERT INTO Restaurant (Name, Description, Address, PhoneNumber, PostalCode, CategoryID)
+								VALUES (:title, :content, :address, :phone, :postal, :catID)";
+								
 			$statement = $db->prepare($createStatement);
 
 			$statement->bindValue(':title', $name);
@@ -38,7 +33,9 @@ if($_POST)
 
 			$statement->execute();
 
-			header('Location:index.php');
+			include 'fileupload.php';
+
+			Header('Location:index.php');
 		}		
 	}
 	elseif($command == 'Update')

@@ -27,6 +27,14 @@ if($id)
   {
     $post = $statement->fetch();
   }
+  //Query for the images associated with this page.
+  $image_query = "SELECT * FROM Images
+                WHERE Images.RestaurantId = :id";
+  $statement = $db->prepare($image_query);
+  $statement->bindValue(':id', $id);
+  $statement->execute();
+  $image = $statement->fetch();
+  $image_count = $statement->rowCount();
 
   $query = "SELECT ReviewId, reviews.UserId, Heading, PostDate, user_name, Review, Rating FROM reviews JOIN users ON reviews.UserId = users.UserId WHERE RestaurantId = :restId ORDER BY PostDate DESC";
   $select_statement = $db->prepare($query);
@@ -43,9 +51,9 @@ else
 
   <div id="all_blogs">
     <div class="blog_post">
-            <?php if ($image_upload_detected): ?>
+            <?php if ($image_count > 0): ?>
 
-              <img src="" alt="">
+              <img src="uploads/<?= $image['FileName'] ?>" alt="<?= $image['FileName'] ?>">
             
             <?php endif ?>
             <h2><?= $post['Name'] ?></h2>
