@@ -38,7 +38,7 @@ else
 }
 ?>
 <div id="all_blogs">
-  <form action="process_post.php" method="post">
+  <form action="process_post.php" method="post" enctype='multipart/form-data'>
     <fieldset>
       <legend>Edit Restaurant Information</legend>
       <p>
@@ -68,6 +68,10 @@ else
             <option value="<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></option>
           <?php endforeach ?>
         </select>
+      </p>
+      <p>
+        <label for='image'>Picture:</label>
+        <input type='file' name='image' id='image'>
       </p>
       <p>
         <input type="hidden" name="id" value="<?= $post['RestaurantId'] ?>" />
