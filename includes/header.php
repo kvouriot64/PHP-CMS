@@ -27,7 +27,7 @@ if($_SESSION)
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>AfterHours</title>
@@ -70,7 +70,7 @@ if($_SESSION)
           </ul>
         </nav>
         <div>
-          <form action="search_results.php"class="searchbar" method="post">
+          <form action="search_results.php" class="searchbar" method="post">
             <input name="search" id="search" placeholder="Search">
              <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
 
