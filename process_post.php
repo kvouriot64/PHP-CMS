@@ -71,6 +71,11 @@ if($_POST)
 
 			updateImages($id, $db);
 
+			if($file_name)
+			{
+				deleteImage($id, $db, $file_name);
+			}
+
 			header('Location:index.php');
 		}
 	}
@@ -82,14 +87,80 @@ if($_POST)
 		}
 		else
 		{
-			$query = "DELETE FROM Restaurant WHERE RestaurantId = :id";
+			$file_query = "SELECT FileName FROM Images WHERE RestaurantId = :id";
 
-			$statement = $db->prepare($query);
-			$statement->bindValue(':id', $id);
-			$statement->execute();
+			$file_statement = $db->prepare($file_query);
+			$file_statement->bindValue(':id', $id);
+			$file_statement->execute();
+
+			if($file_statement->rowCount() > 0);
+			{
+				$file_name = $file_statement->fetch();
+				deleteImage($id, $db, $file_name['FileName']);
+			}
+
+			$table = "Images";
+			$restaurant_id = "RestaurantId";
+
+			// $query = "DELETE FROM Images WHERE RestaurantId = :id";
+
+			// $statement = $db->prepare($query);
+			// $statement->bindValue(':id', $id);
+			// $statement->execute();
+
+			deleteStatement($db, $table, $restaurant_id, $id);
+
+			// $query = "DELETE FROM Reviews WHERE RestaurantId = :id";
+
+			// $statement = $db->prepare($query);
+			// $statement->bindValue(':id', $id);
+			// $statement->execute();
+			
+			$table = "Reviews";
+			deleteStatement($db, $table, $restaurant_id, $id);
+
+			// $query = "DELETE FROM Restaurant WHERE RestaurantId = :id";
+
+			// $statement = $db->prepare($query);
+			// $statement->bindValue(':id', $id);
+			// $statement->execute();
+
+			$table = "Restaurant";
+			deleteStatement($db, $table, $restaurant_id, $id);
 		}
 		header('Location:index.php');
 	}
+}
+
+/*
+* Executes delete statements to the database based on the table's primary key
+* param $table: The table whose row is being delete
+* param $table_id: The column being used to execute the delete statement
+* param $id: The physical value of the $table_id column
+* param $db: The PDO object representing our database.
+*/
+function deleteStatement($db, $table, $table_id, $id) {
+	$query = "DELETE FROM $table WHERE $table_id = :id";
+
+	$statement = $db->prepare($query);
+	$statement->bindValue(':id', $id);
+	$statement->execute();
+}
+
+/*Deletes a specific image from the database and uploads folder
+* param $id: The ID of the restaurant the image belongs to
+* param $file_name: The name of the file to remove
+* param $db: The database being modified.
+*/
+function deleteImage($id, $db, $file_name) {
+	$delete_query = "DELETE FROM Images WHERE RestaurantId = :id";
+
+				$delete_statement = $db->prepare($delete_query);
+				$delete_statement->bindValue(':id', $id);
+
+				$delete_statement->execute();
+
+				unlink("uploads/" . $file_name);
 }
 
 /*Executes the necessary validation and SQL commands to update the images table.

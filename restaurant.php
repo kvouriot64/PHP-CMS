@@ -53,12 +53,12 @@ else
     <div class="blog_post">
             <?php if ($image_count > 0): ?>
 
-              <img src="uploads/<?= $image['FileName'] ?>" alt="<?= $image['FileName'] ?>">
+              <img src="uploads/<?= $image['FileName'] ?>" alt="<?= str_replace(" ", "", $image['FileName']) ?>">
             
             <?php endif ?>
             <h2><?= $post['Name'] ?></h2>
             <h4>Category: <?= $post['Category'] ?></h4>
-            <p class='blog_content'>About <?= $post['Name'] ?>: <?= $post['Description'] ?></p>
+            <p class='blog_content'>About <?= $post['Name'] ?>:</p> <?= $post['Description'] ?>
             <p>Phone Number: <?= $post['PhoneNumber'] ?></p>
             <p>Address: <?= $post['Address'] ?>, <?= $post['PostalCode'] ?></p>
     </div>
@@ -68,9 +68,9 @@ else
 
         <?php foreach($reviews as $review): ?>
 
-          <h3><?= $review['Rating']?>/5</h2>
-          <h3><?= $review['Heading'] ?></h2>
-          <p><?= $review['Review'] ?></p>
+          <h3><?= $review['Rating'] ?>/5</h3>
+          <h3><?= $review['Heading'] ?></h3>
+          <?= $review['Review'] ?>
           <small>Posted by <?= $review['user_name'] ?> at <?= $review['PostDate'] ?></small>
 
           <?php if($adminLoggedIn): ?>
@@ -106,6 +106,5 @@ else
         </form>
       </div>
   <?php endif ?>
-
-
+</div>
 <?php include 'includes/footer.php'; ?>

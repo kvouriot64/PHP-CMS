@@ -31,6 +31,14 @@ if($id)
   $category_statement = $db->prepare($categoryquery);
   $category_statement->execute();
   $categories = $category_statement->fetchAll();
+
+  $image_query = "SELECT * FROM Images WHERE RestaurantId = :id";
+
+  $stmt = $db->prepare($image_query);
+  $stmt->bindValue(':id', $id);
+  $stmt->execute();
+
+  $image = $stmt->fetch();
 }
 else
 {
@@ -41,6 +49,16 @@ else
   <form action="process_post.php" method="post" enctype='multipart/form-data'>
     <fieldset>
       <legend>Edit Restaurant Information</legend>
+
+      <?php if ($stmt->rowCount() > 0): ?>
+            <p>
+              <img src="uploads/<?= $image['FileName'] ?>" alt="<?= str_replace(" ", "", $image['FileName']) ?>">
+
+              <label for="check">Delete Image</label>
+              <input type="checkbox" name="delete_image" id="check" value="<?= $image['FileName'] ?>">
+            </p>
+            <?php endif ?>
+
       <p>
         <label for="name">Name: </label>
         <input name="name" id="name" value="<?=$post['Name']?>" />
