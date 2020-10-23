@@ -28,8 +28,10 @@ if($id)
     $post = $statement->fetch();
   }
   //Query for the images associated with this page.
-  $image_query = "SELECT * FROM Images
-                WHERE Images.RestaurantId = :id";
+  $image_query = "SELECT * FROM Images JOIN Restaurant
+                  ON Restaurant.ImageId = Images.ImageId
+                  AND RestaurantId = :id";
+                  
   $statement = $db->prepare($image_query);
   $statement->bindValue(':id', $id);
   $statement->execute();
@@ -69,25 +71,31 @@ else
         <?php foreach($reviews as $review): ?>
 
           <h3><?= $review['Rating'] ?>/5</h3>
-          <h3><?= $review['Heading'] ?></h3>
-          <?= $review['Review'] ?>
-          <small>Posted by <?= $review['user_name'] ?> at <?= $review['PostDate'] ?></small>
+          <blockquote class="blockquote"><?= $review['Heading'] ?></blockquote>
+          <p class="mb-0"><?= $review['Review'] ?></p>
+          <footer class="blockquote-footer">Posted by <?= $review['user_name'] ?> at <?= $review['PostDate'] ?></footer>
 
           <?php if($adminLoggedIn): ?>
 
-            <p><a href="delete_review.php?id=<?= $review['ReviewId'] ?>&restid=<?= $id ?>">Delete Review</a></p>
+            <p><a href="delete_review.php?id=<?= $review['ReviewId'] ?>&restid=<?= $id ?>">Delete</a></p>
 
           <?php endif ?>
         <?php endforeach ?>
 
+      <?php else: ?>
+
+          <h2>There are no reviews available for this restaurant</h2>
+
       <?php endif ?>
     </div>
 
-    <?php if($userLoggedIn): ?>
+    <?php /* check if the user is logged in before displaying the following markup */ 
+          if($userLoggedIn): 
+    ?>
       <h1>Ate here recently? Leave a Review</h1>
       <div id="reviews">
         <form action="process_review.php?id=<?= $id ?>" method="post">
-          <label for="heading">Heading:</label>
+          <label for="heading">Title:</label>
           <input name="heading" id="heading">
 
           <label for="content">Review: </label>
@@ -102,7 +110,7 @@ else
             <option value="5">5</option>
           </select>
 
-          <input type="submit" name="Command" value="Post">
+          <button class="btn btn-primary" type="submit" name="Command">Post</button>
         </form>
       </div>
   <?php endif ?>

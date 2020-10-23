@@ -31,56 +31,66 @@ if($_SESSION)
 <head>
     <meta charset="utf-8">
     <title>AfterHours</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/bootstrap.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
     <!-- <script src="js/loginValidate.js"></script> -->
-<script>
+    <script>
      $(document).ready(function() {
   $('#content').summernote({
         height: 300})
-});
+  });
     </script>
 </head>
 <body>
     <div id="wrapper">
-        <div id="header">
-            <h1><a href="index.php">AfterHours</a></h1>
-            <p><?= $message ?></p>
-        </div>
-        <nav class="navbar">
-          <ul>
-              <li><a href="index.php" class='active'>Home</a></li>
-
-              <?php if($adminLoggedIn): ?>
-                <li><a href="manage_categories.php">Manage Categories</a></li>
-              	<li><a href="admin.php">Admin</a></li>
-                <li><a href="create.php" >Add Restaurant</a></li>
-                <li><a href="manage_users.php">Manage Users</a></li>
-              <?php endif ?>
-
-              <?php if(!$userLoggedIn): ?>
-              <li><a href="login.php">Login</a></li>
-              <?php else: ?>
-                <li><a href="logout.php">Log Out</a></li>
-              <?php endif ?>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+          <a class="navbar-brand" href="index.php">AfterHours</a>
+          <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <ul class="navbar-nav mr-auto">
+            <?php foreach($categories as $category): ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="index.php?category=<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></a>
+                </li>
+            <?php endforeach ?>
           </ul>
-        </nav>
-        <div>
-          <form action="search_results.php" class="searchbar" method="post">
-            <input name="search" id="search" placeholder="Search">
-             <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
 
-             <p>Search by category</p>
-
-             <select name="category">
-              <option value="all">All</option>
-              <?php foreach($categories as $category): ?>
-                <option value="<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></option>
-              <?php endforeach ?>
-            </select>
+          <form class="form-inline my-2 my-lg-0" action="search_results.php" method="post">
+            <input class="form-control mr-sm-2" name="search" id="search" placeholder="Search">
+            <button id="submit" type="submit" name="submit" class="btn btn-secondary my-2 my-sm-0">Search</button>
+            <div class="form-group">
+              <label class="form-control-label" for="category">Category</label>
+              <select class="custom-select" name="category" id="category">
+                <option value="all">All</option>
+                <?php foreach($categories as $category): ?>
+                  <option value="<?= $category['CategoryID'] ?>"><?= $category['Category'] ?></option>
+                <?php endforeach ?>
+              </select>
+            </div>
           </form>
-        </div>
+
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <?= $message ?>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <?php if(!$userLoggedIn): ?>
+                <a class="dropdown-item" href="login.php">Login</a>
+              <?php else: ?>
+                <a class="dropdown-item" href="logout.php">Log Out</a>
+                <div class="dropdown-divider"></div>
+              <?php endif ?>
+              <?php if($adminLoggedIn): ?>
+                <a class="dropdown-item" href="manage_categories.php">Manage Categories</a>
+              	<a class="dropdown-item" href="admin.php">Manage Restaurants</a>
+                <a class="dropdown-item" href="create.php" >Add Restaurant</a>
+                <a class="dropdown-item" href="manage_users.php">Manage Users</a>
+              <?php endif ?>
+            </div>
+          </div>
+        </nav>

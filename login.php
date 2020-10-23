@@ -1,9 +1,10 @@
-<?php 
-	require 'db/connect.php';
-
+<?php include 'includes/header.php';
 	$invalidUser = false;
 	$invalidPassword = false;
 	
+	$usernameError = "Incorrect username or account doesn't exist";
+	$passwordError = "Incorrect password";
+
 	if($_POST)
 	{
 		$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -19,49 +20,47 @@
 
 		$result = $statement->fetch();
 
-		if($result)
+		if(!$result && (!password_verify($password, $result['Password']) 
+		|| $password != $result['Password']))
 		{
-			if(password_verify($password, $result['Password']) 
-			|| $password == $result['Password'])
-			{
-				session_start();
-				$_SESSION['UserId'] = $result['UserId'];
-				$_SESSION['username'] = $username;
-				$_SESSION['password'] = $password;
+			$invalidUser = true;
+			$invalidPassword = true;
+		}
+		elseif($result && (!password_verify($password, $result['Password']) 
+		&& $password != $result['Password']))
+		{
+			$invalidPassword = true;
+		}
+		elseif($result && (password_verify($password, $result['Password']) 
+		|| $password == $result['Password']))
+		{
+			session_start();
+			$_SESSION['UserId'] = $result['UserId'];
+			$_SESSION['username'] = $username;
+			$_SESSION['password'] = $password;
 
-				header('Location: index.php');
-			}
+			header('Location: index.php');
 		}
 	}
 ?>
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-	</head>
-  <body>
-    <div id="wrapper">
-    <h1>Sign In</h1>
+	<div class="container">
+    	<h1>Sign In</h1>
 			<form method="post">
 			  <fieldset>
 			    <div class="form-group">
 			      <label for="username">Username:</label>
 			      <input name="username" type="text" class="form-control" id="username" placeholder="username">
-
 			    </div>
+				<?php if($invalidUser): ?>
+			      	<p class="text-danger"><?= $usernameError ?></p>
+			      <?php endif ?>
+
 
 			    <div class="form-group">
 			      <label for="password">Password</label>
 			      <input name="password" type="password" class="form-control" id="password" placeholder="Password">
 			      <?php if($invalidPassword): ?>
-			      	<p><?= $passwordError ?></p>
+			      	<p class="text-danger"><?= $passwordError ?></p>
 			      <?php endif ?>
 			    </div>
 
@@ -71,7 +70,4 @@
 
 			<p><a href="register.php">Not Registered? Sign Up</a></p>
 		</div>
-	<footer>
-	</footer>
-  </body>
-</html>
+	<?php include 'includes/footer.php' ?>

@@ -41,10 +41,14 @@
           <?php endforeach ?>
         </select>
       </p>
-      <p>
-         <label for='image'>Picture:</label>
-         <input type='file' name='image' id='image'>
-      </p>
+      <div class="input-group mb-3">
+        <div class="custom-file">
+          <p>
+            <label class="custom-file-label" for='image'>Picture:</label>
+            <input class="custom-file-input" type='file' name='image' id='image'>
+          </p>
+        </div>
+      </div>
       <p>
         <input class="btn btn-primary" type="submit" name="command" value="Add" />
       </p>

@@ -33,6 +33,7 @@ $results = $statement->fetchAll();
 			<?php endforeach ?>
 		</ul>
 	</div>
+	<div class="container">
 	<form method="post">
 	  <fieldset>
 	    <div class="form-group">
@@ -43,6 +44,7 @@ $results = $statement->fetchAll();
 	    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
 	  </fieldset>
 	</form>
+	</div>
 </div>
 
 <?php include 'includes/footer.php'; ?>

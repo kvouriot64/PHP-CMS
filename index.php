@@ -12,7 +12,7 @@ if($_GET)
 		$statement = $db->prepare($query);
 		$statement->bindValue(':id', $category);
 		$statement->execute();
-		$posts = $statement->fetchAll();
+		$restaurants = $statement->fetchAll();
 
 		$rowCount = $statement->rowCount();
 	}
@@ -23,30 +23,22 @@ else
 
 	$statement = $db->prepare($query);
 	$statement->execute();
-	$posts = $statement->fetchAll();
+	$restaurants = $statement->fetchAll();
 
 	$rowCount = $statement->rowCount();
 }
 ?>
 
-<div id="all_restaurants">
-  <h2>Welcome to AfterHours!</h2>
-  <p>We're an open source hub for information on all bars and restaurants across Winnipeg! We allow users to browse and review restaurants as well as their menus and dishes.</p>
-
-  <h3>Categories</h3>
-
-  <?php foreach($categories as $category_result): ?>
-      
-    <p><a href="index.php?category=<?= $category_result['CategoryID'] ?>"><?= $category_result['Category'] ?></a>
-    </p>
-
-    <?php endforeach ?>
-
+<div class="jumbotron">
+  <h2 class="display-3">Welcome to AfterHours!</h2>
+  <p>We're an open source hub for information on all bars and restaurants across Winnipeg! We allow users to browse and review restaurants as well.</p>
+</div>
+<div>
  <?php if($rowCount > 0): ?>
   <ul>
-    <?php foreach($posts as $post): ?>
+    <?php foreach($restaurants as $restaurant): ?>
       
-    <li><a href="restaurant.php?id=<?= $post['RestaurantId'] ?>"><?= $post['Name'] ?></a>
+    <li><a href="restaurant.php?id=<?= $restaurant['RestaurantId'] ?>"><?= $restaurant['Name'] ?></a>
     </li>
 
     <?php endforeach ?>

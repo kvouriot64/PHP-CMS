@@ -3,11 +3,11 @@ session_start();
 
 if($_SESSION)
 {
-	$message = "Welcome " . $_SESSION['username'];
+	$message = "Welcome, " . $_SESSION['username'];
 }
 else
 {
-	$message = "Guest";
+	$message = "Not signed in";
 }
 
 ?>
