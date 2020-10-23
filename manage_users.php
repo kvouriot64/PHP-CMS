@@ -10,7 +10,7 @@
 <p><a href="add_user.php">Add User</a></p>
 <div>
 	<?php if(count($users) > 0): ?>
-		<table>
+		<table class="table table-hover">
 			<thead>
 				<th>User Name</th>
 				<th>User Type</th>

@@ -1,7 +1,7 @@
 <?php  require 'includes/header.php'; 
 /*
-* Gets the blog post specified in the get parameter so any edits
-* can be made to the post and updated in the database
+* Gets the user specified in the get parameter so any edits
+* can be made to the user's info and updated in the database
 */ 
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -32,99 +32,82 @@ else
 
 if($_POST)
 {
-  $validPassword = true;
   $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
-  $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-  $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-  $confirmpassword = filter_input(INPUT_POST, 'confirm-password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-  $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+  include 'includes/validate_users.php';
 
-  if($id)
+  if(!$duplicate_username && !$invalidUsername && !$nonMatchingPasswords  && !$invalidEmail && !$invalidPasswordLength)
   {
-    $passwordquery = "SELECT Password FROM Users WHERE UserId = :id";
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    // update the user's information in the database if all conditionals are
+    $insert = "UPDATE users SET user_name = :user, 
+                  Password = :pass,
+                  Email = :email
+                WHERE UserId = :id";
 
-    $passwordStatement = $db->prepare($passwordquery);
-    $passwordStatement->bindValue('id', $id);
-    $passwordStatement->execute();
+    $statement = $db->prepare($insert);
+    $statement->bindValue(':user', $username);
+    $statement->bindValue(':pass', $password_hash);
+    $statement->bindValue(':email', $email);
+    $statement->bindValue(':id', $id);
 
-    $passwordResult = $passwordStatement->fetch();
+    $statement->execute();
 
-
-    if(empty($password) && empty($confirmpassword))
-    {
-      $password = $passwordResult['Password'];
-    }
-    elseif($password != $confirmpassword)
-    {
-      echo "The passwords entered don't match, please try again.";
-      $validPassword = false;
-    }
-    elseif(!isPasswordLengthValid($password))
-    {
-      $validPassword = false;
-      echo 'Password must be between 8 and 16 characters';
-    }
-
-    if($username && $validPassword && $email)
-    {
-      $password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-      $insert = "UPDATE users SET user_name = :user, 
-                    Password = :pass,
-                    Email = :email
-                  WHERE UserId = :id";
-
-      $statement = $db->prepare($insert);
-      $statement->bindValue(':user', $username);
-      $statement->bindValue(':pass', $password_hash);
-      $statement->bindValue(':email', $email);
-      $statement->bindValue(':id', $id);
-
-      $statement->execute();
-
-      Header("Location: manage_users.php");
-    }
+    Header("Location: manage_users.php");
   }
 }
-
-
-//Tests if the password is a valid length
-function isPasswordLengthValid($password) {
-    $validPassword = false;
-
-    if(strlen($password) >= 8 && strlen($password) <= 16)
-    {
-      $validPassword = true;
-    }
-
-    return $validPassword;
-  }
 ?>
-<div id="all_blogs">
+<div>
   <form method="post">
     <fieldset>
-      <legend>Edit Restaurant Information</legend>
-      <p>
-        <label for="username">User Name: </label>
-        <input name="username" id="username" value="<?=$post['user_name']?>" />
-      </p>
-      <p>
-        <label for="email">Email: </label>
-        <input name="email" id="email" value="<?= $post['Email'] ?>">
-      </p>
-      <p>
-         <label for="password">New Password: </label>
+      <legend>Edit User Information</legend>
+
+      <div class="form-group">
+        <label for="username" class="col-sm-2 col-form-label">User Name: </label>
+        <div class="col-sm-4">
+          <input name="username" id="username" class="form-control" value="<?=$post['user_name']?>" />
+        </div>
+      </div>
+
+      <?php if($invalidUsername && $_POST): ?>
+        <p class="text-danger"><?= $username_error ?></p>
+      <?php endif?>
+
+      <?php if($duplicate_username && $_POST): ?>
+        <p class="text-danger"><?= $duplicate_name_error ?></p>
+      <?php endif ?>
+
+      <div class="form-group">
+        <label for="email" class="col-sm-2 col-form-label">Email: </label>
+        <input name="email" id="email" class="form-control" value="<?= $post['Email'] ?>">
+      </div>
+
+      <?php if($invalidEmail && $_POST): ?>
+        <p class="text-danger"><?= $email_error ?></p>
+      <?php endif?>
+
+      <div class="form-group">
+        <label for="password" class="col-sm-2 col-form-label">New Password: </label>
+        <div class="col-sm-4">
           <input name="password" type="password" class="form-control" id="password" placeholder="Password">
-      </p>
-      <p>
-         <label for="confirm-password">Confirm Password: </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+         <label for="confirm-password" class="col-sm-2 col-form-label">Confirm Password: </label>
           <input name="confirm-password" type="password" class="form-control" id="confirm-password" placeholder="Password">
-      </p>
-      <p>
+      </div>
+
+      <?php if($invalidPasswordLength && $_POST): ?>
+        <p class="text-danger"><?= $password_wrong_length ?></p>
+      <?php endif?>
+
+      <?php if($nonMatchingPasswords && $_POST): ?>
+        <p class="text-danger"><?= $passwords_dont_match ?></p>
+      <?php endif?>
+
         <input type="hidden" name="id" value="<?= $post['UserId'] ?>" />
         <input type="submit" name="command" value="Update" />
-      </p>
       <p><a href="manage_users.php">cancel</a></p>
     </fieldset>
   </form>

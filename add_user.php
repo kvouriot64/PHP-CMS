@@ -67,6 +67,10 @@ if($_POST)
 	}
 }
 
+/*
+* Purpose: Tests if the password input is between 8 and 16 characters
+* Param $password: The password the user is inputting
+*/
 function isPasswordLengthValid($password)
 {
 	$validPassword = false;
