@@ -1,11 +1,12 @@
 <?php  require 'includes/header.php'; 
 /*
-* Gets the blog post specified in the get parameter so any edits
+* Gets the restaurant specified in the get parameter so any edits
 * can be made to the post and updated in the database
 */ 
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
+// check if the ID is valid
 if($id)
 {
   $query = "SELECT * FROM Restaurant, Categories WHERE 
@@ -17,13 +18,14 @@ if($id)
 
   $count = $statement->rowCount();
 
+  // validates whether the id in the get parameter is valid or not
   if($count == 0)
   {
     Header("Location: index.php");
   }
   else
   {
-    $post = $statement->fetch();
+    $restaurant = $statement->fetch();
   }
 
   $categoryquery = "SELECT * FROM Categories";
@@ -32,7 +34,9 @@ if($id)
   $category_statement->execute();
   $categories = $category_statement->fetchAll();
 
-  $image_query = "SELECT * FROM Images WHERE RestaurantId = :id";
+  $image_query = "SELECT Images.ImageId, FileName FROM Images JOIN Restaurant
+                  ON Images.ImageId = Restaurant.ImageId 
+                  WHERE RestaurantId = :id";
 
   $stmt = $db->prepare($image_query);
   $stmt->bindValue(':id', $id);
@@ -61,23 +65,23 @@ else
 
       <p>
         <label for="name">Name: </label>
-        <input name="name" id="name" value="<?=$post['Name']?>" />
+        <input name="name" id="name" value="<?=$restaurant['Name']?>" />
       </p>
       <p>
         <label for="content">Description: </label>
-        <textarea name="description" id="content"><?= $post['Description'] ?></textarea>
+        <textarea name="description" id="content"><?= $restaurant['Description'] ?></textarea>
       </p>
       <p>
         <label for="address">Address</label>
-        <textarea name="address" id="address"><?= $post['Address'] ?></textarea>
+        <textarea name="address" id="address"><?= $restaurant['Address'] ?></textarea>
       </p>
       <p>
         <label for="phone">Phone Number: </label>
-        <textarea name="phone" id="phone"><?= $post['PhoneNumber'] ?></textarea>
+        <textarea name="phone" id="phone"><?= $restaurant['PhoneNumber'] ?></textarea>
       </p>
       <p>
         <label for="postal">Postal Code: </label>
-        <textarea name="postal" id="postal"><?= $post['PostalCode'] ?></textarea>
+        <textarea name="postal" id="postal"><?= $restaurant['PostalCode'] ?></textarea>
       </p>
       <p>
         <label for="category">Category: </label>
@@ -92,7 +96,7 @@ else
         <input type='file' name='image' id='image'>
       </p>
       <p>
-        <input type="hidden" name="id" value="<?= $post['RestaurantId'] ?>" />
+        <input type="hidden" name="id" value="<?= $restaurant['RestaurantId'] ?>" />
         <input type="submit" name="command" value="Update" />
         <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this page?')" />
       </p>

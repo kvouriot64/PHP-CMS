@@ -42,6 +42,38 @@ require_once 'db/connect.php';
         {
             move_uploaded_file($temporary_image_path, $new_image_path);
 
+            //insert the image into the database
+
+            $image_query = "SELECT 1 FROM Images WHERE FileName = :file_name";
+            $statement = $db->prepare($image_query);
+            $statement->bindValue(':file_name', $image_filename);
+            $statement->execute();
+
+            if($statement->rowCount() == 0)
+            {
+                $image_insert = "INSERT INTO Images (FileName)
+                                VALUES (:file)";
+
+                $statement = $db->prepare($image_insert);
+                $statement->bindValue(':file', $image_filename);
+                $statement->execute();
+
+                // pull the id of the image that was just added to the database
+                $image_id_query = "SELECT MAX(ImageId) FROM Images";
+                $image_id_statement = $db->prepare($image_id_query);
+                $image_id_statement->execute();
+            }
+            else
+            {
+                $image_id_query = "SELECT ImageId FROM Images WHERE FileName = :file_name";
+
+                $image_id_statement = $db->prepare($image_id_query);
+                $image_id_statement->bindValue(':file_name', $image_filename);
+                $image_id_statement->execute();
+            }
+
+            $image_id = $image_id_statement->fetch();
+
             /*This query will execute if a new restaurant is being added. Because the new restaurant ID isn't known, a SELECT MAX() statement will be executed to retrieve it.*/
             $restaurant_id_query = "SELECT MAX(RestaurantId) FROM Restaurant";
             $statement = $db->prepare($restaurant_id_query);
@@ -49,11 +81,14 @@ require_once 'db/connect.php';
 
             $restaurant_id = $statement->fetch();
 
-            $image_insert = "INSERT INTO Images (FileName, RestaurantId)
-                                VALUES (:file, :rest_id)";
+            // update the image id in the restaurants table
 
-            $statement = $db->prepare($image_insert);
-            $statement->bindValue(':file', $image_filename);
+            $update_image_id = "UPDATE Restaurant 
+                                    SET ImageId = :image_id
+                                    WHERE RestaurantId = :rest_id";
+
+            $statement = $db->prepare($update_image_id);
+            $statement->bindValue(':image_id', $image_id[0]);
             $statement->bindValue(':rest_id', $restaurant_id[0]);
 
             $statement->execute();
